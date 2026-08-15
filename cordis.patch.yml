@@ -1,0 +1,12 @@
+- insert:
+    - id: dsh-yuanbao
+      name: '@tencent-connect/dsh-yuanbao'
+      config:
+        appKey: !!js process.env.YUANBAO_APP_KEY ?? ''
+        appSecret: !!js process.env.YUANBAO_APP_SECRET ?? ''
+        token: !!js process.env.YUANBAO_TOKEN ?? ''
+        cwd: !!js process.env.DSH_YUANBAO_CWD ?? process.cwd()
+        # provider/model 留空时继承宿主默认模型路由。
+        requireMention: true
+        textChunkLimit: 3000
+        sessionIdleTimeout: 1800000
