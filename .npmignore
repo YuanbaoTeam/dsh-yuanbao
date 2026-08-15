@@ -1,0 +1,9 @@
+node_modules/
+.env
+.env.*
+package-lock.json
+*.tgz
+*.log
+*.map
+.git/
+.github/
