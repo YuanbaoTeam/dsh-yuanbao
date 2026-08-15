@@ -20,12 +20,17 @@ export class YuanbaoSender {
   async sendRaw(target: ReplyTarget, msgBody: YuanbaoMsgBodyElement[]): Promise<void> {
     if (target.scope === 'group') {
       const groupCode = target.groupCode ?? target.targetId;
-      this.logger.info(`sender sendGroupMessage: group=${groupCode}; body=${msgBody.length}`);
+      const fromAccount = target.fromAccount || this.account.botId || '';
+      if (!fromAccount) {
+        this.logger.warn(`send group message skipped: missing fromAccount; group=${groupCode}`);
+        return;
+      }
+      this.logger.info(`sender sendGroupMessage: group=${groupCode}; from=${fromAccount}; body=${msgBody.length}`);
       const result = await this.client.sendGroupMessage({
         group_code: groupCode,
+        from_account: fromAccount,
         msg_body: msgBody,
         random: String(Math.floor(Math.random() * 4294967295)),
-        ...(target.fromAccount ? { from_account: target.fromAccount } : {}),
         ...(target.refMsgId ? { ref_msg_id: target.refMsgId, msg_id: target.refMsgId } : {}),
         ...(target.traceId ? { trace_id: target.traceId } : {}),
       });

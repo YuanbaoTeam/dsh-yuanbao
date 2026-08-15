@@ -38,9 +38,10 @@ export async function handleInbound(params: {
     return;
   }
 
-  const extracted = extractText(msg.msg_body ?? []);
+  const msgBody = msg.msg_body ?? [];
+  const extracted = extractText(msgBody);
   const botIdentity = config.botId || msg.to_account || '';
-  const mentioned = detectMention(extracted, botIdentity);
+  const mentioned = detectMention(msgBody, extracted, botIdentity);
   logger.info(`inbound text extracted: chars=${extracted.length}; requireMention=${scope === 'group' && config.requireMention ? 'yes' : 'no'}; mentioned=${mentioned ? 'yes' : 'no'}; botIdentity=${botIdentity || 'empty'}`);
   if (scope === 'group' && config.requireMention && !mentioned) {
     logger.warn(`inbound dropped: group message without mention; group=${peerId}; textPreview=${preview(extracted)}`);
@@ -53,7 +54,7 @@ export async function handleInbound(params: {
     scope,
     targetId: peerId,
     groupCode: msg.group_code,
-    fromAccount: msg.to_account,
+    fromAccount: msg.to_account || sender.getAccount().botId,
     refMsgId: msg.msg_id,
     refFromAccount: msg.from_account,
     traceId: msg.trace_id,
@@ -116,14 +117,21 @@ function extractText(body: YuanbaoMsgBodyElement[]): string {
   return parts.join('\n').trim();
 }
 
-function detectMention(text: string, botId: string): boolean {
-  if (!botId) return false;
-  return text.includes(botId) || text.includes(`@${botId}`);
+function detectMention(body: YuanbaoMsgBodyElement[], text: string, botId: string): boolean {
+  if (botId && (text.includes(botId) || text.includes(`@${botId}`))) return true;
+  return body.some(elem => {
+    const content = elem.msg_content ?? {};
+    if (elem.msg_type !== 'TIMCustomElem') return false;
+    const desc = typeof content.desc === 'string' ? content.desc.trim() : '';
+    return desc.startsWith('@');
+  });
 }
 
 function stripMention(text: string, botId: string): string {
-  if (!botId) return text;
-  return text.replaceAll(`@${botId}`, '').replaceAll(botId, '').trim();
+  const withoutKnownBot = botId
+    ? text.replaceAll(`@${botId}`, '').replaceAll(botId, '')
+    : text;
+  return withoutKnownBot.replace(/\[TIMCustomElem:\s*.*?\]\s*/g, '').trim();
 }
 
 function preview(text: string, max = 120): string {

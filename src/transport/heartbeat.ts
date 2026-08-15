@@ -3,7 +3,6 @@ import type { Logger, ReplyTarget } from '../types.js';
 import type { YuanbaoSender } from './sender.js';
 
 const DEFAULT_RUNNING_HEARTBEAT_INTERVAL_MS = 2_000;
-const MAX_RUNNING_HEARTBEAT_IDLE_MS = 30_000;
 
 export interface ReplyHeartbeatController {
   emitRunning(): void;
@@ -22,7 +21,6 @@ export function createReplyHeartbeatController(params: {
   let timer: ReturnType<typeof setTimeout> | undefined;
   let active = false;
   let startedAt = 0;
-  let lastEmitAt = 0;
   let runningEverStarted = false;
   let finishEmitted = false;
 
@@ -35,17 +33,11 @@ export function createReplyHeartbeatController(params: {
   const stop = (): void => {
     active = false;
     startedAt = 0;
-    lastEmitAt = 0;
     clearTimer();
   };
 
   const sendRunning = (): void => {
     if (!active || finishEmitted) return;
-    if (Date.now() - lastEmitAt > MAX_RUNNING_HEARTBEAT_IDLE_MS) {
-      logger.warn(`reply heartbeat stopped: idle timeout; target=${target.scope}:${target.targetId}`);
-      stop();
-      return;
-    }
 
     void sender.sendHeartbeat(target, WS_HEARTBEAT.RUNNING, startedAt).catch(error => {
       logger.warn(`reply heartbeat RUNNING failed: ${error instanceof Error ? error.message : String(error)}`);
@@ -57,10 +49,9 @@ export function createReplyHeartbeatController(params: {
   const emitRunning = (): void => {
     if (finishEmitted) return;
     runningEverStarted = true;
-    lastEmitAt = Date.now();
     if (active) return;
     active = true;
-    startedAt = lastEmitAt;
+    startedAt = Date.now();
     logger.info(`reply heartbeat started: target=${target.scope}:${target.targetId}`);
     sendRunning();
   };
