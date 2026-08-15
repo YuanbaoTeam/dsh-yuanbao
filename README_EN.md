@@ -1,4 +1,4 @@
-# @tencent-connect/dsh-yuanbao
+# @yuanbao/dsh-yuanbao
 
 [中文](./README.md) | English
 
@@ -25,7 +25,7 @@ Yuanbao User → Yuanbao WebSocket Gateway → dsh-yuanbao → ctx.agents → ds
 
 ```bash
 # Install into an independent profile
-dsh plugin --profile yuanbao add @tencent-connect/dsh-yuanbao
+dsh plugin --profile yuanbao add @yuanbao/dsh-yuanbao
 
 # Start
 dsh --profile yuanbao
@@ -196,7 +196,7 @@ You can also explicitly set the model in `cordis.patch.yml` for `dsh-yuanbao`, o
 ```yaml
 - insert:
     - id: dsh-yuanbao
-      name: '@tencent-connect/dsh-yuanbao'
+      name: '@yuanbao/dsh-yuanbao'
       config:
         provider: openai
         model: gpt-4o-mini
@@ -235,7 +235,7 @@ Default bundle patch:
 ```yaml
 - insert:
     - id: dsh-yuanbao
-      name: '@tencent-connect/dsh-yuanbao'
+      name: '@yuanbao/dsh-yuanbao'
       config:
         appKey: !!js process.env.YUANBAO_APP_KEY ?? ''
         appSecret: !!js process.env.YUANBAO_APP_SECRET ?? ''

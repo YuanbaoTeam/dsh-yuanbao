@@ -1,5 +1,5 @@
 {
-  "name": "@tencent-connect/dsh-yuanbao",
+  "name": "@yuanbao/dsh-yuanbao",
   "version": "0.1.0",
   "description": "Yuanbao IM channel plugin for deepseek-harness (dsh)",
   "type": "module",
