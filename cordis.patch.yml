@@ -1,6 +1,6 @@
 - insert:
     - id: dsh-yuanbao
-      name: '@yuanbao/dsh-yuanbao'
+      name: 'dsh-yuanbao'
       config:
         appKey: !!js process.env.YUANBAO_APP_KEY ?? ''
         appSecret: !!js process.env.YUANBAO_APP_SECRET ?? ''

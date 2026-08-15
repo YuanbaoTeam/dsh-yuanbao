@@ -1,4 +1,4 @@
-# @yuanbao/dsh-yuanbao
+# dsh-yuanbao
 
 中文 | [English](./README_EN.md)
 
@@ -25,7 +25,7 @@
 
 ```bash
 # 安装到独立 profile
-dsh plugin --profile yuanbao add @yuanbao/dsh-yuanbao
+dsh plugin --profile yuanbao add dsh-yuanbao
 
 # 启动
 dsh --profile yuanbao
@@ -196,7 +196,7 @@ agent-default-model:
 ```yaml
 - insert:
     - id: dsh-yuanbao
-      name: '@yuanbao/dsh-yuanbao'
+      name: 'dsh-yuanbao'
       config:
         provider: openai
         model: gpt-4o-mini
@@ -235,7 +235,7 @@ agent-default-model:
 ```yaml
 - insert:
     - id: dsh-yuanbao
-      name: '@yuanbao/dsh-yuanbao'
+      name: 'dsh-yuanbao'
       config:
         appKey: !!js process.env.YUANBAO_APP_KEY ?? ''
         appSecret: !!js process.env.YUANBAO_APP_SECRET ?? ''

@@ -1,5 +1,5 @@
 {
-  "name": "@yuanbao/dsh-yuanbao",
+  "name": "dsh-yuanbao",
   "version": "0.1.0",
   "description": "Yuanbao IM channel plugin for deepseek-harness (dsh)",
   "type": "module",
